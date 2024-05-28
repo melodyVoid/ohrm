@@ -52,9 +52,8 @@ export function geneDashLine(message, length): string {
 export function isLowerCaseEqual(str1: string, str2: string): boolean {
   if (str1 && str2) {
     return str1.toLowerCase() === str2.toLowerCase()
-  } else {
-    return !str1 && !str2
   }
+  return !str1 && !str2
 }
 
 export function exit(error: Error) {

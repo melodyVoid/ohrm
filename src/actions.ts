@@ -25,7 +25,26 @@ export async function onList() {
   printMessages(messages)
 }
 
-export function onCurrent() {}
+export async function onCurrent({ showUrl }: { showUrl: boolean }) {
+  const currentRegistry = await getCurrentRegistry()
+  let usingUnknownRegistry = true
+  const registries = await getRegistries()
+  for (const name in registries) {
+    const registry = registries[name]
+    if (isLowerCaseEqual(registry[REGISTRY], currentRegistry)) {
+      usingUnknownRegistry = false
+      printMessages([
+        `You are using ${chalk.green(showUrl ? registry[REGISTRY] : name)} registry.`,
+      ])
+    }
+  }
+  if (usingUnknownRegistry) {
+    printMessages([
+      `Your current registry(${currentRegistry}) is not included in the ohrm registries.`,
+      `Use the ${chalk.green('ohrm add <registry> <url> [home]')} command to add your registry.`,
+    ])
+  }
+}
 
 export function onUse() {}
 
