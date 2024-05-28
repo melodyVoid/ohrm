@@ -1,12 +1,19 @@
 import chalk from 'chalk'
-import { REGISTRY, SPACE } from './constants'
+import { HOME, OHPMRC, OHRMRC, REGISTRY, SPACE } from './constants'
 import {
+  exit,
   geneDashLine,
   getCurrentRegistry,
   getRegistries,
+  isInternalRegistry,
   isLowerCaseEqual,
+  isRegistryNotFound,
   printMessages,
+  printSuccess,
+  readConfigFile,
+  writeConfigFile,
 } from './helpers'
+import type { Ohpmrc, Ohrmrc, Registry } from './types'
 
 export async function onList() {
   const currentRegistry = await getCurrentRegistry()
@@ -46,8 +53,63 @@ export async function onCurrent({ showUrl }: { showUrl: boolean }) {
   }
 }
 
-export function onUse() {}
+export async function onUse(name: string) {
+  if (await isRegistryNotFound(name)) {
+    return
+  }
 
-export function onAdd() {}
+  const registries = await getRegistries()
+  const registry = registries[name]
+  const ohpmrc = (await readConfigFile<Ohpmrc>(OHPMRC))!
+  await writeConfigFile(OHPMRC, { ...ohpmrc, [REGISTRY]: registry[REGISTRY] })
 
-export function onDelete() {}
+  printSuccess(`The registry has been changed to '${name}'.`)
+}
+
+export async function onAdd(name: string, url: string, home?: string) {
+  const registries = await getRegistries()
+  const registryNames = Object.keys(registries)
+  const registryUrls = registryNames.map(name => registries[name][REGISTRY])
+  if (
+    registryNames.includes(name) ||
+    registryUrls.some(registryUrl => isLowerCaseEqual(registryUrl, url))
+  ) {
+    return exit(
+      'The registry name or url is already included in the ohrm registries. Please make sure that the name and url are unique.',
+    )
+  }
+
+  const newRegistry: Registry = { registry: '' }
+  newRegistry[REGISTRY] = /\/$/.test(url) ? url : url + '/'
+  if (home) {
+    newRegistry[HOME] = home
+  }
+  const customRegistries = (await readConfigFile<Ohrmrc>(OHRMRC))!
+  const newCustomRegistries = Object.assign(customRegistries, {
+    [name]: newRegistry,
+  })
+  await writeConfigFile(OHRMRC, newCustomRegistries)
+  printSuccess(
+    `Add registry ${name} success, run ${chalk.green('ohrm use ' + name)} command to use ${name} registry.`,
+  )
+}
+
+export async function onDelete(name: string) {
+  if (
+    (await isRegistryNotFound(name)) ||
+    (await isInternalRegistry(name, 'delete'))
+  ) {
+    return
+  }
+
+  const customRegistries = (await readConfigFile<Ohrmrc>(OHRMRC))!
+  const registry = customRegistries[name]
+  delete customRegistries[name]
+  await writeConfigFile(OHRMRC, customRegistries)
+  printSuccess(`The registry '${name}' has been deleted successfully.`)
+
+  const currentRegistry = await getCurrentRegistry()
+  if (currentRegistry === registry[REGISTRY]) {
+    await onUse('ohpm')
+  }
+}

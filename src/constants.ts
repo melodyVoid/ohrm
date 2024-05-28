@@ -1,6 +1,7 @@
 import path from 'node:path'
 export { default as REGISTRIES } from '../registries.json'
 
+export const HOME = 'home'
 export const SPACE = ' '
 export const REGISTRY = 'registry'
 
