@@ -1,0 +1,33 @@
+{
+  "name": "ohrm",
+  "version": "1.0.0",
+  "description": "ohpm registry manager can help you switch between different ohpm registries easily and fast.",
+  "type": "module",
+  "bin": {
+    "ohrm": "bin/ohrm.js"
+  },
+  "scripts": {
+    "lint": ""
+  },
+  "keywords": [
+    "ohpm",
+    "registry",
+    "manager",
+    "ohrm"
+  ],
+  "author": "BoTao <botaoxyz@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/melodyVoid/ohrm/issues"
+  },
+  "homepage": "https://github.com/melodyVoid/ohrm",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "ini": "^4.1.3"
+  },
+  "devDependencies": {
+    "eslint": "^9.3.0",
+    "prettier": "^3.2.5"
+  }
+}
