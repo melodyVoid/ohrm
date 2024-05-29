@@ -29,7 +29,7 @@
   "bugs": {
     "url": "https://github.com/melodyVoid/ohrm/issues"
   },
-  "homepage": "https://github.com/melodyVoid/ohrm",
+  "homepage": "https://github.com/melodyVoid/ohrm#readme",
   "dependencies": {
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
