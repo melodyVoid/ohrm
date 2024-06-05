@@ -15,6 +15,7 @@ import {
   isInternalRegistry,
   isLowerCaseEqual,
   isRegistryNotFound,
+  printError,
   printMessages,
   printSuccess,
   readConfigFile,
@@ -144,4 +145,16 @@ export async function onSetPublish(name: string, publishRegistry: string) {
     await writeConfigFile(OHPMRC, ohpmrc)
     printSuccess(`Set repository attribute of ohrmrc successfully`)
   }
+}
+
+export async function onSetScope(scopeName: string, url: string) {
+  const scopeRegistryKey = `${scopeName}:${REGISTRY}`
+  if (!/^@/.test(scopeRegistryKey)) {
+    printError('scope name must start with "@"')
+    return
+  }
+  const ohpmrc = (await readConfigFile<Ohpmrc>(OHPMRC))!
+  Object.assign(ohpmrc, { [scopeRegistryKey]: url })
+  await writeConfigFile(OHPMRC, ohpmrc)
+  printSuccess(`Set scope '${scopeRegistryKey}=${url}' success.`)
 }

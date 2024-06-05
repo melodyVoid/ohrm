@@ -57,7 +57,7 @@ export function printSuccess(message) {
   console.log(chalk.bgGreenBright(padding('SUCCESS')) + ' ' + message)
 }
 
-function printError(error) {
+export function printError(error) {
   const errorBadge = chalk.bgRed(padding('ERROR'))
   const errorMessage = chalk.red(error)
   console.error(`${errorBadge} ${errorMessage}`)

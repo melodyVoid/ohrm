@@ -35,6 +35,11 @@ program
   .description('Set ohrm publish registry for a custom registry to publish package')
   .action(actions.onSetPublish)
 
+program
+  .command('set-scope <scopeName> <url>')
+  .description('Associating a scope with a registry')
+  .action(actions.onSetScope)
+
 program.parse(process.argv)
 
 if (process.argv.length === 2) {
