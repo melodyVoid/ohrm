@@ -158,3 +158,15 @@ export async function onSetScope(scopeName: string, url: string) {
   await writeConfigFile(OHPMRC, ohpmrc)
   printSuccess(`Set scope '${scopeRegistryKey}=${url}' success.`)
 }
+
+export async function onDeleteScope(scopeName: string) {
+  const scopeRegistryKey = `${scopeName}:${REGISTRY}`
+  const ohpmrc = (await readConfigFile<Ohpmrc>(OHPMRC))!
+  if (!ohpmrc[scopeRegistryKey]) {
+    printError(`The scope '${scopeRegistryKey}' is not found.`)
+    return
+  }
+  delete ohpmrc[scopeRegistryKey]
+  await writeConfigFile(OHPMRC, ohpmrc)
+  printSuccess(`Delete scope '${scopeRegistryKey}' success.`)
+}

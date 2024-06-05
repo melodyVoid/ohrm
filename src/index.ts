@@ -32,13 +32,20 @@ program
 
 program
   .command('set-publish <name> <publishRegistry>')
-  .description('Set ohrm publish registry for a custom registry to publish package')
+  .description(
+    'Set ohrm publish registry for a custom registry to publish package',
+  )
   .action(actions.onSetPublish)
 
 program
   .command('set-scope <scopeName> <url>')
   .description('Associating a scope with a registry')
   .action(actions.onSetScope)
+
+program
+  .command('del-scope <scopeName>')
+  .description('Remove a scope')
+  .action(actions.onDeleteScope)
 
 program.parse(process.argv)
 
