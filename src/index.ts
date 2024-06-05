@@ -30,6 +30,11 @@ program
   .description('Delete custom registry')
   .action(actions.onDelete)
 
+program
+  .command('set-publish <name> <publishRegistry>')
+  .description('Set ohrm publish registry for a custom registry to publish package')
+  .action(actions.onSetPublish)
+
 program.parse(process.argv)
 
 if (process.argv.length === 2) {

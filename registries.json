@@ -1,10 +1,12 @@
 {
   "ohpm": {
     "home": "https://ohpm.openharmony.cn/",
-    "registry": "https://ohpm.openharmony.cn/ohpm/"
+    "registry": "https://ohpm.openharmony.cn/ohpm/",
+    "publish_registry": "https://ohpm.openharmony.cn/ohpm/"
   },
   "hmos": {
     "home": "https://repo.harmonyos.com/",
-    "registry": "https://repo.harmonyos.com/ohpm/"
+    "registry": "https://repo.harmonyos.com/ohpm/",
+    "publish_registry": "https://repo.harmonyos.com/ohpm/"
   }
 }

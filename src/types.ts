@@ -1,6 +1,7 @@
 export interface Registry {
   registry: string
   home?: string
+  publish_registry?: string
 }
 
 export interface Ohrmrc {

@@ -1,5 +1,12 @@
 import chalk from 'chalk'
-import { HOME, OHPMRC, OHRMRC, REGISTRY, SPACE } from './constants'
+import {
+  HOME,
+  OHPMRC,
+  OHRMRC,
+  PUBLISH_REGISTRY,
+  REGISTRY,
+  SPACE,
+} from './constants'
 import {
   exit,
   geneDashLine,
@@ -61,7 +68,7 @@ export async function onUse(name: string) {
   const registries = await getRegistries()
   const registry = registries[name]
   const ohpmrc = (await readConfigFile<Ohpmrc>(OHPMRC))!
-  await writeConfigFile(OHPMRC, { ...ohpmrc, [REGISTRY]: registry[REGISTRY] })
+  await writeConfigFile(OHPMRC, { ...ohpmrc, ...registry })
 
   printSuccess(`The registry has been changed to '${name}'.`)
 }
@@ -111,5 +118,30 @@ export async function onDelete(name: string) {
   const currentRegistry = await getCurrentRegistry()
   if (currentRegistry === registry[REGISTRY]) {
     await onUse('ohpm')
+  }
+}
+
+export async function onSetPublish(name: string, publishRegistry: string) {
+  if (
+    (await isRegistryNotFound(name)) ||
+    (await isInternalRegistry(name, 'set publish registry'))
+  ) {
+    return
+  }
+
+  const customRegistries = (await readConfigFile<Ohrmrc>(OHRMRC))!
+  const registry = customRegistries[name]
+  registry[PUBLISH_REGISTRY] = publishRegistry
+  await writeConfigFile(OHRMRC, customRegistries)
+  printSuccess(
+    `Set the ${PUBLISH_REGISTRY} of registry '${name}' successfully.`,
+  )
+
+  const currentRegistry = await getCurrentRegistry()
+  if (currentRegistry && currentRegistry === registry[REGISTRY]) {
+    const ohpmrc = (await readConfigFile<Ohpmrc>(OHPMRC))!
+    Object.assign(ohpmrc, { [PUBLISH_REGISTRY]: publishRegistry })
+    await writeConfigFile(OHPMRC, ohpmrc)
+    printSuccess(`Set repository attribute of ohrmrc successfully`)
   }
 }
