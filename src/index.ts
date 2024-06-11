@@ -57,6 +57,11 @@ program
   .description('Open the homepage of registry with optional browser')
   .action(actions.onHome)
 
+program
+  .command('test [registry]')
+  .description('Show response time for specific or all registries')
+  .action(actions.onTest)
+
 program.parse(process.argv)
 
 if (process.argv.length === 2) {

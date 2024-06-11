@@ -5,6 +5,7 @@ export const HOME = 'home'
 export const SPACE = ' '
 export const REGISTRY = 'registry'
 export const PUBLISH_REGISTRY = 'publish_registry'
+export const TEST_PACKAGE = '@ohos/axios'
 
 export const OHPMRC = path.join(
   process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']!,

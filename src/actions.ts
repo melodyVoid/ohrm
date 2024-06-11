@@ -7,9 +7,11 @@ import {
   PUBLISH_REGISTRY,
   REGISTRY,
   SPACE,
+  TEST_PACKAGE,
 } from './constants'
 import {
   exit,
+  fetchWithTimeout,
   geneDashLine,
   getCurrentRegistry,
   getRegistries,
@@ -204,4 +206,64 @@ export async function onHome(name: string, browser: string) {
     return exit(`The homepage of registry '${name}' is not found.`)
   }
   open(registries[name][HOME], browser ? { app: { name: browser } } : undefined)
+}
+
+export async function onTest(target: string) {
+  const registries = await getRegistries()
+  const timeout = 5000
+
+  if (target && (await isRegistryNotFound(target))) {
+    return exit()
+  }
+
+  const sources = target ? { [target]: registries[target] } : registries
+  const results = await Promise.all(
+    Object.keys(sources).map(async name => {
+      const { registry } = sources[name]
+      const start = Date.now()
+      let status = false
+      let isTimeout = false
+      try {
+        const response = await fetchWithTimeout(registry + TEST_PACKAGE, timeout)
+        status = response.ok
+      } catch (error) {
+        isTimeout = error.message === 'This operation was aborted'
+      }
+      return {
+        name,
+        registry,
+        success: status,
+        time: Date.now() - start,
+        isTimeout,
+      }
+    }),
+  )
+
+  const [fastest] = results
+    .filter(each => each.success)
+    .map(each => each.time)
+    .sort((a, b) => a - b)
+
+  const messages: string[] = []
+  const currentRegistry = await getCurrentRegistry()
+  const errorMsg = chalk.red(
+    ' (Fetch error, if this is your private registry, please ignore)',
+  )
+  const timeoutMsg = chalk.yellow(` (Fetch timeout over ${timeout} ms)`)
+  const length = Math.max(...Object.keys(sources).map(key => key.length)) + 3
+  results.forEach(({ registry, success, time, name, isTimeout }) => {
+    const isFastest = time === fastest
+    const prefix = registry === currentRegistry ? chalk.green('* ') : '  '
+    let suffix =
+      isFastest && !target
+        ? chalk.bgGreenBright(time + ' ms')
+        : isTimeout
+          ? 'timeout'
+          : `${time} ms`
+    if (!success) {
+      suffix += isTimeout ? timeoutMsg : errorMsg
+    }
+    messages.push(prefix + name + geneDashLine(name, length) + suffix)
+  })
+  printMessages(messages)
 }

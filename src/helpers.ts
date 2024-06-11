@@ -91,7 +91,23 @@ export async function isInternalRegistry(name: string, handle) {
   return false
 }
 
-export function exit(error: Error | string) {
+export function exit(error?: Error | string) {
   error && printError(error)
   process.exit(1)
+}
+
+export function fetchWithTimeout(
+  url: string,
+  timeout: number,
+): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => {
+      controller.abort()
+    }, timeout)
+    fetch(url, { signal: controller.signal })
+      .then(response => resolve(response))
+      .catch(error => reject(error))
+      .finally(() => clearTimeout(timeoutId))
+  })
 }
