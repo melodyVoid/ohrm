@@ -47,6 +47,11 @@ program
   .description('Remove a scope')
   .action(actions.onDeleteScope)
 
+program
+  .command('rename <name> <newName>')
+  .description('Change custom registry name')
+  .action(actions.onRename)
+
 program.parse(process.argv)
 
 if (process.argv.length === 2) {

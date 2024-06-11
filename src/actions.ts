@@ -170,3 +170,25 @@ export async function onDeleteScope(scopeName: string) {
   await writeConfigFile(OHPMRC, ohpmrc)
   printSuccess(`Delete scope '${scopeRegistryKey}' success.`)
 }
+
+export async function onRename(name: string, newName: string) {
+  if (
+    (await isRegistryNotFound(name)) ||
+    (await isInternalRegistry(name, 'rename'))
+  ) {
+    return
+  }
+  if (name === newName) {
+    return exit('The names cannot be the same.')
+  }
+
+  if (!(await isRegistryNotFound(newName, false))) {
+    return exit(`The new registry name '${newName}' is already exist.`)
+  }
+
+  const customRegistries = (await readConfigFile<Ohrmrc>(OHRMRC))!
+  customRegistries[newName] = JSON.parse(JSON.stringify(customRegistries[name]))
+  delete customRegistries[name]
+  await writeConfigFile(OHRMRC, customRegistries)
+  printSuccess(`The registry '${name}' has been renamed to '${newName}'.`)
+}
