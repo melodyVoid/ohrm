@@ -52,6 +52,11 @@ program
   .description('Change custom registry name')
   .action(actions.onRename)
 
+program
+  .command('home <name> [browser]')
+  .description('Open the homepage of registry with optional browser')
+  .action(actions.onHome)
+
 program.parse(process.argv)
 
 if (process.argv.length === 2) {

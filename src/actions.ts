@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import open from 'open'
 import {
   HOME,
   OHPMRC,
@@ -191,4 +192,16 @@ export async function onRename(name: string, newName: string) {
   delete customRegistries[name]
   await writeConfigFile(OHRMRC, customRegistries)
   printSuccess(`The registry '${name}' has been renamed to '${newName}'.`)
+}
+
+export async function onHome(name: string, browser: string) {
+  if (await isRegistryNotFound(name)) {
+    return
+  }
+
+  const registries = await getRegistries()
+  if (!registries[name][HOME]) {
+    return exit(`The homepage of registry '${name}' is not found.`)
+  }
+  open(registries[name][HOME], browser ? { app: { name: browser } } : undefined)
 }
