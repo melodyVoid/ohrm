@@ -81,12 +81,27 @@ List all the registries
 <img src="./screenshots/del-scope.png" width="600">
 </p>
 
+<p align="center">Change custom registry name</p>
+<p align="center">
+<img src="./screenshots/rename.png" width="600">
+</p>
+
+<p align="center">Open the homepage of registry with optional browser</p>
+<p align="center">
+<img src="./screenshots/home.png" width="600">
+</p>
+
+<p align="center">Show response time for specific or all registries</p>
+<p align="center">
+<img src="./screenshots/test.png" width="600">
+</p>
+
 ```
-Usage: ohrm [options] [command]
+Usage: index [options] [command]
 
 Options:
-  -v --version             output the version number
-  -h, --help               display help for command
+  -v --version                          output the version number
+  -h, --help                            display help for command
 
 Commands:
   ls                                    List all the registries
@@ -97,6 +112,9 @@ Commands:
   set-publish <name> <publishRegistry>  Set ohrm publish registry for a custom registry to publish package
   set-scope <scopeName> <url>           Associating a scope with a registry
   del-scope <scopeName>                 Remove a scope
+  rename <name> <newName>               Change custom registry name
+  home <name> [browser]                 Open the homepage of registry with optional browser
+  test [registry]                       Show response time for specific or all registries
   help [command]                        display help for command
 ```
 
